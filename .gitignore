@@ -1,0 +1,16 @@
+# Dependencies (none required to run — this is a static site)
+node_modules/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+
+# Editor folders
+.vscode/
+.idea/
+
+# Local env / scratch
+.env
+*.local

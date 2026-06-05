@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Cute yellow heart with a little shine -->
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFE680"/>
+      <stop offset="1" stop-color="#F4B400"/>
+    </linearGradient>
+  </defs>
+  <path d="M32 56C12 41 4 30 4 19.5 4 10.4 11.4 4 19.5 4 24.8 4 29.6 6.8 32 11.4 34.4 6.8 39.2 4 44.5 4 52.6 4 60 10.4 60 19.5 60 30 52 41 32 56z" fill="url(#g)" stroke="#C98A00" stroke-width="2.5" stroke-linejoin="round"/>
+  <ellipse cx="23" cy="20" rx="5" ry="7" fill="#FFF6CC" opacity="0.85"/>
+</svg>

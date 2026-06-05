@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+  <!-- ===== SEO / Social share (so the link looks cute when sent) ===== -->
+  <title>A Highly Classified Mission 😝</title>
+  <meta name="description" content="Warning: you are about to enter a highly classified mission. Proceed at your own (very cute) risk. 💛" />
+  <meta name="theme-color" content="#FFD23F" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="⚠️ A Highly Classified Mission 😝" />
+  <meta property="og:description" content="You've been selected for a top-secret mission. Tap to begin. 💛" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Optimized inline SVG favicon (a little yellow heart) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E💛%3C/text%3E%3C/svg%3E" />
+  <link rel="apple-touch-icon" href="./assets/favicon.svg" />
+
+  <!-- Playful display font, with a graceful system fallback if it fails to load -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Styles: theme + layout first, animations second -->
+  <link rel="stylesheet" href="./css/styles.css" />
+  <link rel="stylesheet" href="./css/animations.css" />
+</head>
+
+<body>
+  <!-- ============================================================= -->
+  <!-- DECORATIVE BACKGROUND LAYERS (purely visual, hidden from AT)  -->
+  <!-- ============================================================= -->
+
+  <!-- Soft hand-drawn doodles scattered behind everything -->
+  <div class="bg-doodles" aria-hidden="true">
+    <svg class="doodle doodle--sun" viewBox="0 0 100 100"><circle cx="50" cy="50" r="22" fill="none" stroke="currentColor" stroke-width="4"/><g stroke="currentColor" stroke-width="4" stroke-linecap="round"><line x1="50" y1="6" x2="50" y2="18"/><line x1="50" y1="82" x2="50" y2="94"/><line x1="6" y1="50" x2="18" y2="50"/><line x1="82" y1="50" x2="94" y2="50"/><line x1="18" y1="18" x2="27" y2="27"/><line x1="73" y1="73" x2="82" y2="82"/><line x1="82" y1="18" x2="73" y2="27"/><line x1="27" y1="73" x2="18" y2="82"/></g></svg>
+    <svg class="doodle doodle--heart" viewBox="0 0 100 100"><path d="M50 84C20 62 8 44 8 28 8 14 19 6 31 6c8 0 15 4 19 12 4-8 11-12 19-12 12 0 23 8 23 22 0 16-12 34-42 56z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/></svg>
+    <svg class="doodle doodle--star" viewBox="0 0 100 100"><path d="M50 8l11 26 28 2-21 18 7 28-25-15-25 15 7-28-21-18 28-2z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/></svg>
+    <svg class="doodle doodle--squiggle" viewBox="0 0 120 40"><path d="M4 20c12-20 24 20 36 0s24-20 36 0 24 20 36 0" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>
+    <svg class="doodle doodle--spark" viewBox="0 0 100 100"><path d="M50 4l8 38 38 8-38 8-8 38-8-38-38-8 38-8z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></svg>
+  </div>
+
+  <!-- JS injects floating hearts + sparkles into these -->
+  <div id="hearts-layer" class="fx-layer" aria-hidden="true"></div>
+  <div id="sparkle-layer" class="fx-layer" aria-hidden="true"></div>
+  <!-- Cursor trail canvas (desktop, non-reduced-motion only) -->
+  <canvas id="cursor-canvas" class="fx-layer" aria-hidden="true"></canvas>
+  <!-- Full-screen confetti canvas for the finale -->
+  <canvas id="confetti-canvas" class="fx-layer" aria-hidden="true"></canvas>
+
+  <!-- ============================================================= -->
+  <!-- TOP BAR — music + achievements                                -->
+  <!-- ============================================================= -->
+  <header class="topbar">
+    <button id="music-toggle" class="chip" aria-pressed="false" aria-label="Toggle background music">
+      <span class="chip__icon" aria-hidden="true">🎵</span><span class="chip__text">Music: Off</span>
+    </button>
+    <button id="badges-toggle" class="chip" aria-haspopup="true" aria-expanded="false" aria-controls="badges-panel" aria-label="View achievements">
+      <span class="chip__icon" aria-hidden="true">🏆</span><span id="badge-count" class="chip__text">0</span>
+    </button>
+  </header>
+
+  <!-- Achievements drawer (populated by achievements.js) -->
+  <aside id="badges-panel" class="badges-panel" hidden>
+    <h2 class="badges-panel__title">🏆 Achievements</h2>
+    <p class="badges-panel__hint">Sneaky things you unlocked by being adorable.</p>
+    <ul id="badges-list" class="badges-list"></ul>
+  </aside>
+
+  <!-- Live region for toast popups + achievement toasts (announced politely) -->
+  <div id="toast-layer" class="toast-layer" aria-live="polite" aria-atomic="false"></div>
+
+  <!-- ============================================================= -->
+  <!-- MAIN — all scenes live here; app.js toggles .is-active        -->
+  <!-- ============================================================= -->
+  <main id="app" class="app">
+
+    <!-- ---------- Scene 1: Landing / Warning ---------- -->
+    <section class="scene scene--center is-active" id="scene-landing" data-scene="landing">
+      <div class="stamp" aria-hidden="true">TOP&nbsp;SECRET</div>
+      <div class="card card--glow">
+        <div class="warn-emoji" aria-hidden="true">⚠️</div>
+        <h1 class="title">Warning</h1>
+        <p class="lede">You are about to enter a <strong>highly classified mission</strong>.</p>
+        <p class="subtle">Clearance level: dangerously cute. Side effects may include smiling. 😝</p>
+        <button class="btn btn--primary btn--lg" id="btn-proceed" data-sfx="click">Proceed&nbsp;😝</button>
+        <p class="fineprint">By proceeding you agree to be mildly charmed.</p>
+      </div>
+    </section>
+
+    <!-- ---------- Scene 2: Fake boot / loading ---------- -->
+    <section class="scene scene--center" id="scene-loading" data-scene="loading">
+      <div class="card terminal">
+        <div class="terminal__bar" aria-hidden="true"><span></span><span></span><span></span> mission_boot.exe</div>
+        <pre id="boot-log" class="terminal__log" aria-live="polite"></pre>
+        <div class="progress" role="progressbar" aria-label="Loading" aria-valuemin="0" aria-valuemax="100">
+          <div id="boot-bar" class="progress__fill"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- Scene 3: Compatibility scanner ---------- -->
+    <section class="scene scene--center" id="scene-scanner" data-scene="scanner">
+      <div class="card scanner">
+        <h2 class="title title--md">💛 Compatibility Scanner</h2>
+        <div class="scanner__ring">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="scanner__track" cx="60" cy="60" r="52"/>
+            <circle id="scanner-arc" class="scanner__arc" cx="60" cy="60" r="52"/>
+          </svg>
+          <div id="scanner-pct" class="scanner__pct">0%</div>
+        </div>
+        <p id="scanner-label" class="scanner__label" aria-live="polite">Booting up the love radar…</p>
+      </div>
+    </section>
+
+    <!-- ---------- Scene 4: Interactive questions ---------- -->
+    <section class="scene" id="scene-questions" data-scene="questions">
+      <div class="quiz">
+        <div class="quiz__progress">
+          <span id="quiz-step" class="quiz__step">Mission progress</span>
+          <div class="progress progress--slim"><div id="quiz-bar" class="progress__fill"></div></div>
+        </div>
+        <!-- app.js renders one card (question OR meme interlude) here at a time -->
+        <div id="quiz-stage" class="quiz__stage"></div>
+      </div>
+    </section>
+
+    <!-- ---------- Scene 5: The big question ---------- -->
+    <section class="scene scene--center" id="scene-bigq" data-scene="bigq">
+      <!-- Play area gives the runaway NO button room to flee -->
+      <div class="bigq" id="bigq-area">
+        <div class="card card--glow bigq__card">
+          <div class="warn-emoji" aria-hidden="true">💛</div>
+          <h2 class="title title--md">Would you go on a date with me?</h2>
+          <p class="subtle">Choose wisely. (One option is objectively correct.) 😝</p>
+          <div class="bigq__buttons">
+            <button class="btn btn--primary btn--lg" id="btn-yes" data-sfx="success">YES&nbsp;💛</button>
+            <button class="btn btn--ghost" id="btn-no" data-sfx="error">NO&nbsp;😝</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- Scene 6: Success / celebration ---------- -->
+    <section class="scene scene--center" id="scene-success" data-scene="success">
+      <div class="card card--celebrate">
+        <div class="success-emoji" aria-hidden="true">💛</div>
+        <h2 class="title">Mission Successful</h2>
+        <p class="lede">Congratulations! You've officially agreed to go on a date with the guy who was dramatic enough to build an entire website just to ask. 😝</p>
+
+        <div class="countdown" id="countdown" aria-label="Countdown to our date">
+          <div class="countdown__unit"><span id="cd-days" class="countdown__num">--</span><span class="countdown__lbl">days</span></div>
+          <div class="countdown__unit"><span id="cd-hours" class="countdown__num">--</span><span class="countdown__lbl">hrs</span></div>
+          <div class="countdown__unit"><span id="cd-mins" class="countdown__num">--</span><span class="countdown__lbl">min</span></div>
+          <div class="countdown__unit"><span id="cd-secs" class="countdown__num">--</span><span class="countdown__lbl">sec</span></div>
+        </div>
+        <p id="countdown-caption" class="subtle"></p>
+
+        <a class="btn btn--primary btn--lg" id="btn-plan" href="#" data-sfx="click">Let's Plan Our Date&nbsp;😝</a>
+        <button class="btn btn--ghost btn--sm" id="btn-replay" data-sfx="click">Replay the mission 🔁</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating compliment generator (always available once on the journey) -->
+  <button id="compliment-btn" class="fab" hidden aria-label="Get a random compliment">😝 Hit me with a compliment</button>
+
+  <!-- ============================================================= -->
+  <!-- FOOTER — note the sneaky secret button hiding in the ©         -->
+  <!-- ============================================================= -->
+  <footer class="site-footer">
+    <span>Built with 💛, 99% hope and 1% CSS.</span>
+    <button id="secret-btn" class="secret-btn" aria-label="A mysterious button">©</button>
+  </footer>
+
+  <!-- ============================================================= -->
+  <!-- SCRIPTS — load order matters: config + data first             -->
+  <!-- ============================================================= -->
+  <script src="./js/config.js"></script>
+  <script src="./js/data.js"></script>
+  <script src="./js/audio.js"></script>
+  <script src="./js/effects.js"></script>
+  <script src="./js/achievements.js"></script>
+  <script src="./js/easter-eggs.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
